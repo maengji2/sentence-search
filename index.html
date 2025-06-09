@@ -2,9 +2,19 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>문장 검색기</title>
+  <title>[엿]길드 올라타자 검색기</title>
   <style>
-    body { font-family: Arial; padding: 2rem; background: #f5f5f5; }
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f5f5; margin: 0; }
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem;
+    }
+    .title {
+      font-size: 1.8rem; font-weight: bold;
+    }
+    .author {
+      font-size: 0.95rem; color: #666;
+    }
     input[type="text"] {
       width: 100%; padding: 0.5rem; font-size: 1.2rem;
       border: 1px solid #ccc; border-radius: 6px;
@@ -23,19 +33,22 @@
 </head>
 <body>
 
-  <h2>문장 검색기</h2>
+  <div class="header">
+    <div class="title">[엿]길드 올라타자 검색기</div>
+    <div class="author">made by l가을바람l</div>
+  </div>
+
   <input type="text" id="search" placeholder="검색어를 입력하세요..." onkeyup="filterList()">
   <ul id="resultList"></ul>
 
   <script>
     let data = [];
 
-    // JSON 파일 불러오기
     fetch('data.json')
       .then(response => response.json())
       .then(json => {
         data = json;
-        renderList(""); // 전체 목록 표시
+        renderList("");
       });
 
     function renderList(query) {
