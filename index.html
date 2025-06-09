@@ -29,6 +29,30 @@
       transition: background 0.2s;
     }
     li:hover { background: #e0f7fa; }
+
+    /* ✅ 토스트 메시지 스타일 */
+    #toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: #323232;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 12px 16px;
+      position: fixed;
+      z-index: 1;
+      right: 30px;
+      bottom: 30px;
+      font-size: 0.95rem;
+      opacity: 0;
+      transition: opacity 0.5s ease, bottom 0.5s ease;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
   </style>
 </head>
 <body>
@@ -40,6 +64,9 @@
 
   <input type="text" id="search" placeholder="검색어를 입력하세요..." onkeyup="filterList()">
   <ul id="resultList"></ul>
+
+  <!-- ✅ 토스트 메시지 요소 -->
+  <div id="toast">✅ 클립보드에 복사되었습니다</div>
 
   <script>
     let data = [];
@@ -60,6 +87,7 @@
           li.textContent = item;
           li.onclick = () => {
             navigator.clipboard.writeText(item);
+            showToast();  // ✅ 토스트 메시지 호출
           };
           list.appendChild(li);
         }
@@ -69,6 +97,15 @@
     function filterList() {
       const query = document.getElementById("search").value;
       renderList(query);
+    }
+
+    // ✅ 토스트 메시지 함수
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.className = "show";
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+      }, 2000);
     }
   </script>
 
