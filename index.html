@@ -30,28 +30,27 @@
     }
     li:hover { background: #e0f7fa; }
 
-    /* ✅ 토스트 메시지 스타일 */
+    /* ✅ 토스트 스타일 및 애니메이션 */
     #toast {
-      visibility: hidden;
-      min-width: 200px;
+      position: fixed;
+      right: 30px;
+      bottom: 20px;
+      padding: 12px 20px;
       background-color: #323232;
       color: #fff;
-      text-align: center;
-      border-radius: 8px;
-      padding: 12px 16px;
-      position: fixed;
-      z-index: 1;
-      right: 30px;
-      bottom: 30px;
       font-size: 0.95rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       opacity: 0;
-      transition: opacity 0.5s ease, bottom 0.5s ease;
+      transform: translateY(50px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 1000;
+      pointer-events: none;
     }
 
     #toast.show {
-      visibility: visible;
       opacity: 1;
-      bottom: 50px;
+      transform: translateY(0);
     }
   </style>
 </head>
@@ -87,7 +86,7 @@
           li.textContent = item;
           li.onclick = () => {
             navigator.clipboard.writeText(item);
-            showToast();  // ✅ 토스트 메시지 호출
+            showToast();
           };
           list.appendChild(li);
         }
@@ -99,12 +98,12 @@
       renderList(query);
     }
 
-    // ✅ 토스트 메시지 함수
+    // ✅ 토스트 표시 함수 (애니메이션 포함)
     function showToast() {
       const toast = document.getElementById("toast");
-      toast.className = "show";
+      toast.classList.add("show");
       setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
+        toast.classList.remove("show");
       }, 2000);
     }
   </script>
