@@ -1,145 +1,142 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>엿길드 올라타자 검색기</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-        }
-        .search-container {
-            margin-bottom: 20px;
-        }
-        #searchInput {
-            padding: 10px;
-            width: 300px;
-            font-size: 16px;
-        }
-        #results {
-            margin-top: 20px;
-            text-align: left;
-            display: inline-block;
-        }
-        .result-item {
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .result-item:hover {
-            background-color: #f0f0f0;
-        }
-        #copyMessage {
-            color: green;
-            margin-top: 10px;
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>[엿]길드 올라타자 검색기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f5f5f5;
+      margin: 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .title {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .author {
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+
+    li {
+      background: white;
+      margin-bottom: 0.5rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background 0.2s;
+    }
+
+    li:hover {
+      background: #e0f7fa;
+    }
+
+    /* ✅ 토스트 메시지 스타일 */
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 14px 20px;
+      position: fixed;
+      z-index: 1000;
+      right: 30px;
+      bottom: 30px;
+      font-size: 1rem;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
-    <h1>[엿]길드 올라타자 검색기</h1>
-    <p>made by l가을바람l</p>
-    
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="검색어를 입력하세요" oninput="searchData()">
-    </div>
-    
-    <div id="results"></div>
-    <p id="copyMessage">✅ 클립보드에 복사되었습니다</p>
 
-    <script>
-        // 샘플 데이터 (실제 데이터로 교체 필요)
-        const data = [
-            "아이템1",
-            "아이템2",
-            "아이템3",
-            "길드4",
-            "엿길드5"
-        ];
+  <div class="header">
+    <div class="title">[엿]길드 올라타자 검색기</div>
+    <div class="author">made by l가을바람l</div>
+  </div>
 
-        function searchData() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
+  <input type="text" id="search" placeholder="검색어를 입력하세요..." onkeyup="filterList()">
+  <ul id="resultList"></ul>
 
-            if (input.trim() === '') {
-                return;
-            }
+  <!-- ✅ 토스트 메시지 요소 -->
+  <div id="toast">✅ 클립보드에 복사되었습니다</div>
 
-            const filteredData = data.filter(item => item.toLowerCase().includes(input));
-            
-            if (filteredData.length === 0) {
-                resultsDiv.innerHTML = '<p>검색 결과가 없습니다.</p>';
-                return;
-            }
+  <script>
+    let data = [];
 
-            filteredData.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'result-item';
-                div.textContent = item;
-                div.onclick = () => copyToClipboard(item);
-                resultsDiv.appendChild(div);
-            });
+    fetch('data.json')
+      .then(response => response.json())
+      .then(json => {
+        data = json;
+        renderList("");
+      });
+
+    function renderList(query) {
+      const list = document.getElementById("resultList");
+      list.innerHTML = "";
+      data.forEach(item => {
+        if (item.toLowerCase().includes(query.toLowerCase())) {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.onclick = () => {
+            navigator.clipboard.writeText(item);
+            showToast();
+          };
+          list.appendChild(li);
         }
+      });
+    }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const copyMessage = document.getElementById('copyMessage');
-                copyMessage.style.display = 'block';
-                setTimeout(() => {
-                    copyMessage.style.display = 'none';
-                }, 2000);
+    function filterList() {
+      const query = document.getElementById("search").value;
+      renderList(query);
+    }
 
-                // 검색창 초기화
-                document.getElementById('searchInput').value = '';
-                // 검색 결과 초기화
-                document.getElementById('results').innerHTML = '';
-            }).catch(err => {
-                console.error('클립보드 복사 실패:', err);
-            });
-        }
-    </script>
+    // ✅ 토스트 메시지 보여주기 함수
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2000);
+    }
+  </script>
+
 </body>
 </html>
