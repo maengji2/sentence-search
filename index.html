@@ -47,7 +47,6 @@
           li.textContent = item;
           li.onclick = () => {
             navigator.clipboard.writeText(item);
-            alert("클립보드에 복사됨:\n" + item);
           };
           list.appendChild(li);
         }
