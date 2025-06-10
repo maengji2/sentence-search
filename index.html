@@ -134,20 +134,80 @@ body.dark li.active {
   background-color: #ffb300;
   color: #000;
 }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #fff;
+  color: #000;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.modal-content ul {
+  padding-left: 1.2em;
+}
+
+.modal-content li {
+  margin-bottom: 10px;
+}
+
+.modal .close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+body.dark .modal-content {
+  background-color: #333;
+  color: #fff;
+}
 
   </style>
 </head>
 <body>
 
   <div class="header">
-    <div class="header-left">
-      <button class="dark-toggle" onclick="toggleDarkMode()">🌙 다크모드</button>
-    </div>
-    <div class="header-center">
-      <div class="title">[엿]길드 올라타자 검색기</div>
-    </div>
-    <div class="header-right">made by l가을바람l</div>
+  <button onclick="toggleDarkMode()">🌙 다크모드</button>
+  <button onclick="showGuide()">❔ 사용법</button>
+  <h1>[엿]길드 올라타자 검색기</h1>
+  <span class="credit">made by l가을바람l</span>
+</div>
+
+<!-- 사용법 모달 -->
+<div id="guideModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeGuide()">&times;</span>
+    <h2>[검색기 사용법]</h2>
+    <ul>
+      <li>검색창에 검색어를 입력하면 아래에 연관 문장이 도출됩니다.</li>
+      <li>해당 문장을 클릭하면 자동으로 클립보드에 복사됩니다.</li>
+      <li>방향키를 이용해서 문장을 선택 후, 엔터(Enter) 키를 입력하면 클립보드에 복사됩니다.</li>
+    </ul>
   </div>
+</div>
 
   <input type="text" id="search" placeholder="검색어를 입력하세요..." onkeyup="filterList()">
   <ul id="resultList"></ul>
@@ -267,6 +327,19 @@ body.dark li.active {
     item.classList.toggle("active", i === currentIndex);
   });
 }
+function showGuide() {
+  document.getElementById("guideModal").style.display = "block";
+}
+
+function closeGuide() {
+  document.getElementById("guideModal").style.display = "none";
+}
+window.onclick = function(event) {
+  const modal = document.getElementById("guideModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
 
 </script>
 
