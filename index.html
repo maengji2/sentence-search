@@ -184,17 +184,37 @@ body.dark .modal-content {
   background-color: #333;
   color: #fff;
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+.left-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.credit {
+  font-size: 0.9rem;
+  color: gray;
+}
 
   </style>
 </head>
 <body>
 
-  <div class="header">
-  <button onclick="toggleDarkMode()">🌙 다크모드</button>
-  <button onclick="showGuide()">❔ 사용법</button>
+ <div class="header">
+  <div class="left-buttons">
+    <button onclick="toggleDarkMode()">🌙 다크모드</button>
+    <button onclick="showGuide()">❔ 사용법</button>
+  </div>
   <h1>[엿]길드 올라타자 검색기</h1>
   <span class="credit">made by l가을바람l</span>
 </div>
+
 
 <!-- 사용법 모달 -->
 <div id="guideModal" class="modal">
