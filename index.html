@@ -167,22 +167,30 @@ body.dark li.active {
     });
 
   function renderList(query) {
-    const list = document.getElementById("resultList");
-    list.innerHTML = "";
-    currentIndex = -1; // 초기화
+  const list = document.getElementById("resultList");
+  list.innerHTML = "";
 
-    data.forEach((item, index) => {
-      if (item.toLowerCase().includes(query.toLowerCase())) {
-        const li = document.createElement("li");
-        li.textContent = item;
-        li.dataset.index = index;
-        li.onclick = () => {
-          copyAndReset(item);
-        };
-        list.appendChild(li);
-      }
-    });
+  const matchedItems = data.filter(item => item.toLowerCase().includes(query.toLowerCase()));
+  
+  // currentIndex가 범위를 벗어났으면 초기화
+  if (currentIndex >= matchedItems.length) {
+    currentIndex = -1;
   }
+
+  matchedItems.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.dataset.index = index;
+    if (index === currentIndex) {
+      li.classList.add("active");  // 🔥 현재 선택 항목에 active 유지
+    }
+    li.onclick = () => {
+      copyAndReset(item);
+    };
+    list.appendChild(li);
+  });
+}
+
 
   function filterList() {
     const query = document.getElementById("search").value;
@@ -253,10 +261,11 @@ body.dark li.active {
   });
 
   function updateActiveItem(items) {
-    items.forEach((item, i) => {
-      item.classList.toggle("active", i === currentIndex);
-    });
-  }
+  items.forEach((item, i) => {
+    item.classList.toggle("active", i === currentIndex);
+  });
+}
+
 </script>
 
 
