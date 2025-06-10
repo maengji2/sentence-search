@@ -4,18 +4,54 @@
   <meta charset="UTF-8">
   <title>[엿]길드 올라타자 검색기</title>
   <style>
+    :root {
+      --bg-color: #f5f5f5;
+      --text-color: #000;
+      --item-bg: #fff;
+      --hover-bg: #e0f7fa;
+      --toast-bg: #333;
+    }
+
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --item-bg: #1e1e1e;
+      --hover-bg: #333;
+      --toast-bg: #555;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f5f5f5;
+      background: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
+      padding: 2rem;
+      transition: background 0.3s, color 0.3s;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       margin-bottom: 1rem;
+    }
+
+    .header-left {
+      flex: 1;
+      text-align: left;
+    }
+
+    .header-center {
+      flex: 1;
+      text-align: center;
+    }
+
+    .header-right {
+      flex: 1;
+      text-align: right;
+      font-size: 0.95rem;
+      color: var(--text-color);
     }
 
     .title {
@@ -23,9 +59,15 @@
       font-weight: bold;
     }
 
-    .author {
-      font-size: 0.95rem;
-      color: #666;
+    .dark-toggle {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      background: none;
+      border: 1px solid var(--text-color);
+      color: var(--text-color);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
     }
 
     input[type="text"] {
@@ -34,6 +76,8 @@
       font-size: 1.2rem;
       border: 1px solid #ccc;
       border-radius: 6px;
+      background: var(--item-bg);
+      color: var(--text-color);
     }
 
     ul {
@@ -43,7 +87,7 @@
     }
 
     li {
-      background: white;
+      background: var(--item-bg);
       margin-bottom: 0.5rem;
       padding: 0.8rem;
       border-radius: 8px;
@@ -53,14 +97,14 @@
     }
 
     li:hover {
-      background: #e0f7fa;
+      background: var(--hover-bg);
     }
 
     /* ✅ 토스트 메시지 스타일 */
     #toast {
       visibility: hidden;
       min-width: 250px;
-      background-color: #333;
+      background-color: var(--toast-bg);
       color: #fff;
       text-align: center;
       border-radius: 8px;
@@ -87,14 +131,19 @@
 <body>
 
   <div class="header">
-    <div class="title">[엿]길드 올라타자 검색기</div>
-    <div class="author">made by l가을바람l</div>
+    <div class="header-left">
+      <button class="dark-toggle" onclick="toggleDarkMode()">🌙 다크모드</button>
+    </div>
+    <div class="header-center">
+      <div class="title">[엿]길드 올라타자 검색기</div>
+    </div>
+    <div class="header-right">made by l가을바람l</div>
   </div>
 
   <input type="text" id="search" placeholder="검색어를 입력하세요..." onkeyup="filterList()">
   <ul id="resultList"></ul>
 
-  <!-- ✅ 토스트 메시지 요소 -->
+  <!-- ✅ 토스트 메시지 -->
   <div id="toast">✅ 클립보드에 복사되었습니다</div>
 
   <script>
@@ -128,13 +177,16 @@
       renderList(query);
     }
 
-    // ✅ 토스트 메시지 보여주기 함수
     function showToast() {
       const toast = document.getElementById("toast");
       toast.classList.add("show");
       setTimeout(() => {
         toast.classList.remove("show");
       }, 2000);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
     }
   </script>
 
