@@ -324,6 +324,14 @@ body.dark .modal-content {
         copyAndReset(text);
       }
     }
+// Ctrl + C 복사
+if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c") {
+  if (currentIndex >= 0 && currentIndex < document.querySelectorAll("#resultList li").length) {
+    const selectedItem = document.querySelectorAll("#resultList li")[currentIndex];
+    const text = selectedItem.textContent;
+    copyAndReset(text);
+  }
+}
 
     if (e.key === "Escape") {
       document.getElementById("search").value = "";
