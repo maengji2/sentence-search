@@ -198,11 +198,13 @@ body.dark li.active {
   }
 
   function copyAndReset(text) {
-    navigator.clipboard.writeText(text);
-    showToast();
-    document.getElementById("search").value = "";
-    renderList("");
-  }
+  navigator.clipboard.writeText(text);
+  showToast();
+  document.getElementById("search").value = "";
+  currentIndex = -1; // 🔥 선택 상태 초기화
+  renderList("");
+}
+
 
   function showToast() {
     const toast = document.getElementById("toast");
