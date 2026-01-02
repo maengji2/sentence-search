@@ -202,15 +202,28 @@ body.dark .modal-content {
   color: gray;
 }
 
+.kakao-btn {
+  background-color: #FEE500;
+  color: #000;
+  font-weight: bold;
+}
+
+body.dark .kakao-btn {
+  background-color: #FEE500;
+  color: #000;
+}
+
   </style>
 </head>
 <body>
 
  <div class="header">
   <div class="left-buttons">
-    <button onclick="toggleDarkMode()">🌙 다크모드</button>
-    <button onclick="showGuide()">❔ 사용법</button>
-  </div>
+  <button onclick="toggleDarkMode()">🌙 다크모드</button>
+  <button onclick="showGuide()">❔ 사용법</button>
+  <button class="kakao-btn" onclick="openKakao()">💬 문장 추가 요청</button>
+</div>
+
   <h1>[엿]길드 올라타자 검색기</h1>
   <span class="credit">made by l가을바람l</span>
 </div>
@@ -368,6 +381,14 @@ window.onclick = function(event) {
   if (event.target === modal) {
     modal.style.display = "none";
   }
+
+  function openKakao() {
+  window.open(
+    "https://open.kakao.com/o/smX4cpzh",
+    "_blank"
+  );
+}
+
 };
 
 </script>
